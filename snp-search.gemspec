@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
     "spec/snp-search_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = "http://github.com/hpa-bioinformatics/snp-search"
+  s.homepage = "http://github.com/phe-bioinformatics/snp-search"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"

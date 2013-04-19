@@ -15,11 +15,11 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "snp-search"
-  gem.homepage = "http://github.com/hpa-bioinformatics/snp-search"
+  gem.homepage = "http://github.com/phe-bioinformatics/snp-search"
   gem.license = "MIT"
   gem.summary = %Q{Tool for generating SNP database}
   gem.description = %Q{Use the snp-search tool to create, import, manipulate and query your SNP database}
-  gem.email = "ali.al-shahib@hpa.org.uk"
+  gem.email = "ali.al-shahib@phe.gov.uk"
   gem.authors = ["Ali Al-Shahib", "Anthony Underwood"]
   gem.executables = ["snp-search"]
   # dependencies defined in Gemfile
