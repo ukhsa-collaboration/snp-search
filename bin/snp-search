@@ -1,8 +1,8 @@
 require 'snp-search'
-require '../lib/snp_db_connection.rb'
-require '../lib/snp_db_models.rb'
-require '../lib/snp_db_schema.rb'
-require '../lib/output_information_methods.rb'
+require 'snp_db_connection.rb'
+require 'snp_db_models.rb'
+require 'snp_db_schema.rb'
+require 'output_information_methods.rb'
 require 'activerecord-import'
 require 'slop'
 
