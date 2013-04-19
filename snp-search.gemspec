@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "1.2.0"
+  s.version = "2.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
   s.date = "2013-04-19"
   s.description = "Use the snp-search tool to create, import, manipulate and query your SNP database"
-  s.email = "ali.al-shahib@hpa.org.uk"
+  s.email = "ali.al-shahib@phe.gov.uk"
   s.executables = ["snp-search"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -36,6 +36,8 @@ Gem::Specification.new do |s|
     "lib/snp_db_models.rb",
     "lib/snp_db_schema.rb",
     "pkg/snp-search-1.1.0.gem",
+    "pkg/snp-search-1.2.0.gem",
+    "pkg/snp-search-2.3.0.gem",
     "snp-search.gemspec",
     "spec/snp-search_spec.rb",
     "spec/spec_helper.rb"
