@@ -5,7 +5,7 @@ source "http://rubygems.org"
 
  gem "activerecord", "~> 3.1.3"
  gem "bio", "~> 1.4.2"
- gem "slop", "~> 2.4.0"
+ gem "slop", "~> 3.3.2"
  gem 'sqlite3', "~> 1.3.4"
  gem 'activerecord-import', "~> 0.2.8"
 
