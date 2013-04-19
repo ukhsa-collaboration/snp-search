@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "1.1.0"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
     "lib/snp_db_connection.rb",
     "lib/snp_db_models.rb",
     "lib/snp_db_schema.rb",
+    "pkg/snp-search-1.1.0.gem",
     "snp-search.gemspec",
     "spec/snp-search_spec.rb",
     "spec/spec_helper.rb"
