@@ -1,0 +1,111 @@
+= snp-search
+
+SNPsearch is a tool that manages SNP data and allows for data importing, manipulating, editing and complex querying of SNP data.  It can be used to evaluate the utility of SNPs for the assessment of genetic diversity between haploid strains and the management of genotype and phenotype data.  Once the database is created, the user is provided with several query and output options. SNPsearch is particularly useful in the analysis of phylogenetic trees that are based on SNP differences across whole core genomes.  Queries can be made to answer critical genomic questions such as the association of SNPs with particular phenotypes.
+
+== Obtaining and installing the code
+SNPsearch is written in Ruby and operates in a Unix environment.  It is made available as a gem. See the github site for more information (https://github.com/hpa-bioinformatics/snp-search).
+
+To install snp-search, do
+  gem install snp-search
+
+== Requirements
+
+Not much, you just need:
+
+* Unix. Once snp-search is installed, all the necessary gems to run snp-search will also be installed from Rubygems (note that Rubygems requires admin privileges.  If you do not have admin privileges then we suggest you install RVM: (http://beginrescueend.com/rvm/install/) and then gem install snp-search).  
+* ruby version 1.8.7 and above.
+
+* Optional: FastTree.  If you require a tree output in Newick format, you must install FastTree from http://www.microbesonline.org/fasttree/#Install.  You must specify the path of the executable in your .bashrc or .profile file as snp-search will run the command as just 'FastTree' and will not know where FastTree is if it is not specified in your .bashrc or .profile file.
+
+Thats it!
+
+== Running snp-search   
+
+1- The first thing you need to do is to create the database (snp-search -create)
+
+  Two files are needed to create the SQLite3 database:
+
+  1A- Variant Call Format (.vcf) file (which contains the SNP information)
+
+  1B- Your database reference genome that you used to generate your .vcf file (in genbank or embl format, the script will automatically detect the format).
+
+You need the following parameters:
+
+  -n	Name of your database (note that this is a required field in all commands).
+  -v	.vcf file	
+  -d	Database Reference genome (The same file that was used in generating the .vcf file).  This should be in genbank or embl format.
+
+  Other options:
+  -c	SNP quality score cutoff.  A Phred-scaled quality score. High quality scores indicate high confidence calls. Optional, default = 90 (out of 100)
+  -g	Genotype Quality score cutoff. Phred-scaled quality score that the genotype is true.	Optional, default = 30
+  -h	help message
+
+  Usage:
+    snp-search -create -n my_snp_db.sqlite3 -d my_ref.gbk -v my_vcf_file.vcf 
+
+  Note: The strain names in your database will be taken from your vcf file so make sure they are named appropriately in your vcf file.
+
+2- Now that you have created the database (my_snp_db.sqlite3) you can use snp-search to output several queried data.
+
+  2A- First, you should choose which output format you like: 
+    -f, --fasta: output fasta file format (not available with -unique_snps option)
+    -T, --tabular: output tabular file format
+
+  2B- Next, you need to tell snp-search what you want out.  You have several options:
+    - Querying the Database to select the number of unique SNPs within the list of the strains/samples provided (list_of_my_strains.txt). The output is a text file with a list of the unique SNPs and information about each SNP (e.g. if its synonymous or non-synonymous SNP).  
+
+  -u, --unique_snps                      Query for unique snps in the database (only used with -tabular option)
+  -s, --strain                           The strains/samples you like to query (only used with -unique_snps flag)
+       
+  Usage: 
+  snp-search -n my_snp_db.sqlite3 -O -T -u -n my_snp_db.sqlite3 -s list_of_my_strains.txt -o unique_snps.out
+
+  - Querying the database to output all SNPs without specified features in the database (e.g. phages).  This is a way of removing a set of genes (likely to be mobile element genes) that are not needed for SNP analysis.  The user has the option of generating a core SNP tree Newick file for SNP phylogeny (if -F option was used to ouput fasta file).  
+
+  -e, --ignore_snps_from_feature         Ignore SNPs from specified features in the database
+  -r, --remove_non_informative_snps      Only output informative SNPs
+  -I, --ignore_snps_in_range             A list of position ranges to ignore e.g 10..500,2000..2500
+  -R, --ignore_strains                   A list of strains to ignore (seperate by comma e.g. S1,S4,S8 )
+  -a, --annotation                       The name of the gene to ignore (only used with the -ignore_snps_from_feature flag)
+  -o, --out                              Name of output file
+
+  Usage:
+  snp-search -O -F -e -n my_snp_db.sqlite3 -a phage,insertion,transposon -r -o snps_without_phages.fasta
+
+  - Optionally, you can add the following options to generate a phylogenetic tree from the resulting fasta file:
+      
+  -t  Generate SNP phylogeny
+  -w  Output tree in Newick format
+  Usage:
+  snp-search -O -F -e -n my_snp_db.sqlite3 -a phage,insertion,transposon -r -t -w -o snps_without_phages.fasta
+ 
+  The algorithm FastTree is used to generate the nwk file.  FastTree can be downloaded from http://www.microbesonline.org/fasttree/#Install (see above)
+
+  - Output all SNPs with information.  Information for each SNP includes whether the SNP is synonymous or non-synonymous, gene function, whether it is a pseudogene and other useful information.  These information will be tab-seperated. 
+
+  -E, --info                             Output various information about SNPs
+  -o, --out                              Name of output file
+     
+  Usage:
+  snp-search -O -T -E -n my_snp_db.sqlite3 o snps_all_with_info.txt
+
+== View database in Unix or in a GUI 
+Your database will be in sqlite3 format.  If you like to view your table(s) and perform direct queries you can type 
+  sqlite3 snp_db.sqlite3
+
+Alternatively, you may download a SQL tool to view your database (e.g. SQLite sorcerer).
+
+== Contact
+
+If you have any comments, questions or suggestions, please email
+  ali.al-shahib@hpa.org.uk
+or
+  anthony.underwood@hpa.org.uk
+
+Have fun snp-searching!
+
+== Copyright
+
+Copyright (c) 2012 Ali Al-Shahib. See LICENSE.txt for
+further details.
+
