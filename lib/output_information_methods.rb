@@ -41,14 +41,12 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
           # If the feature is empty then just output basic information about the snp.
 
           if features.empty?
-            puts "#{snp.ref_pos}\t#{features.map{|feature| feature.strand == 1} ? "#{ref_base.upcase}" : "#{ref_base.reverse_complement.upcase}"}\t#{features.map{|feature| feature.strand == 1} ? "#{snp_base.upcase}" : "#{snp_base.reverse_complement.upcase}"}"
             outfile.puts "#{snp.ref_pos}\t#{features.map{|feature| feature.strand == 1} ? "#{ref_base.upcase}" : "#{ref_base.reverse_complement.upcase}"}\t#{features.map{|feature| feature.strand == 1} ? "#{snp_base.upcase}" : "#{snp_base.reverse_complement.upcase}"}"
           
           else  
             features.each do |feature|
               if feature.name == "CDS"
 
-                puts "#{snp.ref_pos}\t#{ref_base.upcase if feature.strand == 1}"
                 cds_snps_counter +=1
 
                 annotation = Annotation.where("annotations.qualifier = 'product' and annotations.feature_id = ?", feature.id).first

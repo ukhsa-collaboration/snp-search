@@ -36,14 +36,13 @@ opts = Slop.parse do
   on :T, :tabular, 'output tabular file format'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
-  on :R, :remove_non_informative_snps, 'Only output informative SNPs. Only used with -e option'
-  on :e, :ignore_snps_in_range=, 'A list of position ranges to ignore e.g 10..500,2000..2500. Only used with -e option'
-  on :a, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ). Only used with -e option'
-  on :I, :ignore_snps_on_annotation=, 'The name of the feature to ignore.'
+  on :R, :remove_non_informative_snps, 'Only output informative SNPs.'
+  on :e, :ignore_snps_in_range=, 'A list of position ranges to ignore e.g 10..500,2000..2500.'
+  on :a, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ).'
+  on :I, :ignore_snps_on_annotation=, 'The name of the feature(s) to ignore.  Features should be seperated by comma (e.g. phages,inserstion,transposons)'
   on :o, :out=, 'Name of output file, Required'
   on :t, :tree, 'Generate SNP phylogeny (only used with -fasta option)'
   on :p, :fasttree_path=, 'Full path to the FastTree tool (e.g. /usr/local/bin/FastTree. only used with -tree option)'
-
   separator ''
 
   separator '-output -unique_snps -d db.sqlite3 [options]'
@@ -59,8 +58,6 @@ opts = Slop.parse do
   on :i, :info, 'Output various information about SNPs'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
-  on :t, :tree, 'Generate SNP phylogeny (only used with -fasta option)'
-  on :w, :nwk_out=, 'Name of output tree in Newick format (only used with -tree option)'
   on :o, :out=, 'Name of output file, Required'
 end
 
@@ -151,14 +148,13 @@ elsif opts[:output]
           
     error_msg_optional = ""
 
-    error_msg_optional += "-I,\t --ignore_snps_on_annotation: ignore SNPs from specified features in the database\n" unless opts[:ignore_snps_on_annotation]
-    error_msg_optional += "-R,\t --ignore_strains: A list of strains to ignore\n" unless  opts[:ignore_strains]
-    error_msg_optional += "-i,\t --ignore_snps_in_range: A list of position ranges to ignore e.g 10..500,2000..2500\n" unless  opts[:ignore_snps_in_range]
+    error_msg_optional += "-I,\t --ignore_snps_on_annotation: The name of the feature(s) to ignore.  Features should be seperated by comma (e.g. phages,inserstion,transposons)\n" unless opts[:ignore_snps_on_annotation]
+    error_msg_optional += "-a,\t --ignore_strains: A list of strains to ignore\n" unless  opts[:ignore_strains]
+    error_msg_optional += "-e,\t --ignore_snps_in_range: A list of position ranges to ignore e.g 10..500,2000..2500\n" unless  opts[:ignore_snps_in_range]
     error_msg_optional += "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality\n"  unless  opts[:cuttoff_snp_qual]
     error_msg_optional += "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality\n"  unless  opts[:cuttoff_genotype]
-    error_msg_optional += "-r,\t --remove_non_informative_snps: Only output informative SNPs\n"  unless  opts[:remove_non_informative_snps]
+    error_msg_optional += "-R,\t --remove_non_informative_snps: Only output informative SNPs\n"  unless  opts[:remove_non_informative_snps]
     error_msg_optional += "-t,\t --tree: Construct tree from output\n" unless  opts[:tree]
-    error_msg_optional += "-w,\t --nwk_out: Name of Newick output file(use only when-tree option used)\n"  unless opts[:nwk_out]
 
     unless error_msg == "" 
       puts "Please provide the following required fields:"
