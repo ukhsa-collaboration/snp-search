@@ -1,14 +1,15 @@
-require 'snp-search'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/snp-search/lib/snp-search'
 require 'snp_db_connection.rb'
 require 'snp_db_models.rb'
 require 'snp_db_schema.rb'
-require 'output_information_methods.rb'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/snp-search/lib/output_information_methods.rb'
 require 'activerecord-import'
 require 'slop'
 
 opts = Slop.parse do
 
   banner "\nruby snp-search [-create] [-output] [-n <sqlite3>] [options]*"
+
   separator ''
 
   on :C, :create, 'Create database'
@@ -17,27 +18,27 @@ opts = Slop.parse do
   # separator ''
   # # separator 'README file: https://github.com/hpa-bioinformatics/snp-search/blob/master/README.rdoc'
   # # separator 'The following command must be used when using -create, or -query or -out_file'
-  # on :n, :name=, 'Name of database, Required'
+  # on :n, :name_of_database=, 'Name of database, Required'
 
   separator ''
   
-  separator '-create [options]'
-  on :d, :database_reference_file=, 'Reference genome file, in gbk or embl file format, Required', true
+  separator '-create -r reference_file.fasta -v vcf_file.vcf -d db.sqlite3'
+  on :r, :reference_file=, 'Reference genome file, in gbk or embl file format, Required', true
   on :v, :vcf_file=, 'variant call format (vcf) file, Required', true
-  on :n, :name=, 'Name of database, Required'
+  on :d, :name_of_database=, 'Name of database, Required'
   on :A, :cuttoff_ad=, 'AD ratio cutoff (default 0.9)', :as => :int, :default => 0.9
 
   separator ''
  
-  separator '-output -snps_from_feature -n db_name [options] [-fasta] [-tabular]'
-  on :F, :fasta, 'output fasta file format'
+  separator '-output -all_or_filtered_snps -d db.sqlite3 [options]'
+  on :f, :all_or_filtered_snps, 'SNPs from specified features in the database (if you do not want to ignore any SNPs, just use this option with -n -F/T -o)'
+  on :F, :fasta, 'output fasta file format (default)'
   on :T, :tabular, 'output tabular file format'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
-  on :S, :snps_from_feature, 'SNPs from specified features in the database (if you do not want to ignore any SNPs, just use this option with -n -F/T -o)'
-  on :r, :remove_non_informative_snps, 'Only output informative SNPs. Only used with -e option'
+  on :R, :remove_non_informative_snps, 'Only output informative SNPs. Only used with -e option'
   on :e, :ignore_snps_in_range=, 'A list of position ranges to ignore e.g 10..500,2000..2500. Only used with -e option'
-  on :R, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ). Only used with -e option'
+  on :a, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ). Only used with -e option'
   on :I, :ignore_snps_on_annotation=, 'The name of the feature to ignore.'
   on :o, :out=, 'Name of output file, Required'
   on :t, :tree, 'Generate SNP phylogeny (only used with -fasta option)'
@@ -45,16 +46,16 @@ opts = Slop.parse do
 
   separator ''
 
-  separator '-output -unique_snps -n db_name [-fasta] [-tabular] [options]'
+  separator '-output -unique_snps -d db.sqlite3 [options]'
+  on :u, :unique_snps, 'Query for unique snps in the database'  
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
-  on :u, :unique_snps, 'Query for unique snps in the database'
   on :s, :strain=, 'The strains/samples you like to query (only used with -unique_snps flag)'
   on :o, :out=, 'Name of output file, Required'
 
   separator ''
 
-  separator '-output -info -n db_name [-fasta] [-tabular] [options]'
+  separator '-output -info -d db.sqlite3 [options]'
   on :i, :info, 'Output various information about SNPs'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
@@ -67,49 +68,52 @@ end
 
 # CREATING A DATABASE
 if opts[:create] 
-  
+
+  # raise "Please provide a database file name" if opts[:reference_file].empty?
   # puts opts[:cuttoff_snp_qual].to_i
   
     error_msg = ""
 
-    error_msg += "-n: \t Name of your database\n" unless opts[:name]
-    error_msg += "-d: \t Reference genome file, in gbk or embl file format\n" unless opts[:database_reference_file]
+    error_msg += "-d: \t Name of your database\n" unless opts[:name_of_database]
+    error_msg += "-r: \t Reference genome file, in gbk or embl file format\n" unless opts[:reference_file]
     error_msg += "-v: \t .vcf file\n" unless opts[:vcf_file]
 
-    error_msg_optional = ""
+    # error_msg_optional = ""
 
-    error_msg_optional += "-c: \tSNP quality cutoff, (default = 90)\n" 
-    error_msg_optional += "-g: \tGenotype quality cutoff (default = 30)\n" 
+    # error_msg_optional += "-c: \tSNP quality cutoff, (default = 90)\n" 
+    # error_msg_optional += "-g: \tGenotype quality cutoff (default = 30)\n" 
 
       unless error_msg == "" 
         puts "Please provide the following required fields:"
         puts error_msg
-        puts "Optional fields:"
-        puts error_msg_optional
-        puts opts.help unless opts.empty?
+        # puts "Optional fields:"
+        # puts error_msg_optional
+
+        # puts "Please provide a database file name" if opts[:reference_file].empty?
+        # puts opts.help unless opts.empty?
         exit
       end       
      
-    abort "#{opts[:database_reference_file]} file does not exist!" unless File.exist?(opts[:database_reference_file])
+    abort "#{opts[:reference_file]} file does not exist!" unless File.exist?(opts[:reference_file])
     
     abort "#{opts[:vcf_file]} file does not exist!" unless File.exist?(opts[:vcf_file])
 
 
   # Name of your database 
-  establish_connection(opts[:name])
+  establish_connection(opts[:name_of_database])
 
   # Schema will run here
   db_schema
 
-  ref = opts[:database_reference_file]
+  ref = opts[:reference_file]
 
   sequence_format = guess_sequence_format(ref)
 
         case sequence_format
         when :genbank
-          sequence_flatfile = Bio::FlatFile.open(Bio::GenBank,opts[:database_reference_file]).next_entry
+          sequence_flatfile = Bio::FlatFile.open(Bio::GenBank,opts[:reference_file]).next_entry
         when :embl
-          sequence_flatfile = Bio::FlatFile.open(Bio::EMBL,opts[:database_reference_file]).next_entry
+          sequence_flatfile = Bio::FlatFile.open(Bio::EMBL,opts[:reference_file]).next_entry
         else
           puts "All sequence files should be in genbank or embl format"
           exit
@@ -128,20 +132,20 @@ if opts[:create]
 elsif opts[:output]
 
   error_msg = ""
-  error_msg += "-S: \t SNPs from specified features in the database OR\n-u: \t Query for unique snps in the database OR\n-i: \t Information on all SNPs\n" unless opts[:snps_from_feature] || opts[:unique_snps] || opts[:info]  
+  error_msg += "-f: \t SNPs from specified features in the database OR\n-u: \t Query for unique snps in the database OR\n-i: \t Information on all SNPs\n" unless opts[:all_or_filtered_snps] || opts[:unique_snps] || opts[:info]  
 
   unless error_msg == "" 
     puts "Please provide the following required fields:"
     puts error_msg
-    puts opts.help unless opts.empty?
+    # puts opts.help unless opts.empty?
     exit
   end
 
-  if opts[:snps_from_feature]
+  if opts[:all_or_filtered_snps]
 
     error_msg = ""
 
-    error_msg += "-n: \t Name of your database\n" unless opts[:name]
+    error_msg += "-d: \t Name of your database\n" unless opts[:name_of_database]
     error_msg += "-o: \t name of your output file\n" unless opts[:out]
     error_msg += "-F: \t Fasta output OR\n-T: \t Tabular output" unless opts[:fasta] || opts[:tabular]
           
@@ -164,13 +168,13 @@ elsif opts[:output]
       # Added this here as it wont appear here in error_msg_optional as its set as default.
       puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
       puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
-      puts opts.help unless opts.empty?
+      # puts opts.help unless opts.empty?
       exit
     end
 
-    abort "#{opts[:name]} database does not exist!" unless File.exist?(opts[:name])
+    abort "#{opts[:name_of_database]} database does not exist!" unless File.exist?(opts[:name_of_database])
 
-    establish_connection(opts[:name])
+    establish_connection(opts[:name_of_database])
 
     get_snps(opts[:out], opts[:ignore_snps_on_annotation], opts[:ignore_snps_in_range], opts[:ignore_strains], opts[:remove_non_informative_snps], opts[:fasta], opts[:tabular], opts[:cuttoff_genotype], opts[:cuttoff_snp_qual], opts[:tree], opts[:fasttree_path])
   end
@@ -181,7 +185,7 @@ elsif opts[:output]
 
     error_msg = ""
 
-    error_msg += "-n: \t Name of your database\n" unless opts[:name]
+    error_msg += "-d: \t Name of your database\n" unless opts[:name_of_database]
     error_msg += "-s: \t List of strains you like to query\n" unless opts[:strain]
     error_msg += "-o: \t Name of the output file\n" unless opts[:out]
 
@@ -192,14 +196,14 @@ elsif opts[:output]
       # Added this here as it wont appear here in error_msg_optional as its set as default.
       puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
       puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
-      puts opts.help unless opts.empty?
+      # puts opts.help unless opts.empty?
       exit
     end
      
-    abort "#{opts[:name]} database does not exist!" unless File.exist?(opts[:name])
+    abort "#{opts[:name_of_database]} database does not exist!" unless File.exist?(opts[:name_of_database])
     abort "#{opts[:strain]} file does not exist!" unless File.exist?(opts[:strain])
 
-    establish_connection(opts[:name])
+    establish_connection(opts[:name_of_database])
 
     strains = []
       File.read(opts[:strain]).each_line do |line| 
@@ -214,7 +218,7 @@ elsif opts[:output]
 
     error_msg = ""
 
-    error_msg += "-n: \t the name of your database\n" unless opts[:name]
+    error_msg += "-d: \t the name of your database\n" unless opts[:name_of_database]
     error_msg += "-o: \t name of your output file (in tab-delimited format)\n" unless opts[:out]
 
     unless error_msg == "" 
@@ -224,13 +228,13 @@ elsif opts[:output]
       # Added this here as it wont appear here in error_msg_optional as its set as default.
       puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
       puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
-      puts opts.help unless opts.empty?
+      # puts opts.help unless opts.empty?
       exit
     end
 
-    abort "#{opts[:name]} database does not exist!" unless File.exist?(opts[:name])
+    abort "#{opts[:name_of_database]} database does not exist!" unless File.exist?(opts[:name_of_database])
 
-    establish_connection(opts[:name])
+    establish_connection(opts[:name_of_database])
 
     #information defined in bin/snp-search.rb
     information(opts[:out], opts[:cuttoff_genotype], opts[:cuttoff_snp_qual])

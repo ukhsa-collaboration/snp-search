@@ -63,8 +63,8 @@ def information()
       hydrophobic = ["I", "L", "V", "C", "A", "G", "M", "F", "Y", "W", "H", "T"]
       non_hydrophobic = ["K", "E", "Q", "D", "N", "S", "P", "B"]
 
-      polar = ["Y", "W", "H", "K", "R", "E", "Q", "D", "N", "S", "P", "B"]
-      non_polar = ["I", "L", "V", "C", "A", "G", "M", "F", "T"]
+      polar = ["R", "N", "D", "E", "Q", "H", "K", "S", "T", "Y"]
+      non_polar = ["A", "C", "G", "I", "L", "M", "F", "P", "W", "V"]
 
       small = ["V","C","A","G","D","N","S","T","P"]
       non_small = ["I","L","M","F","Y","W","H","K","R","E","Q"]

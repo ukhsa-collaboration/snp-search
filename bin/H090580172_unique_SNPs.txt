@@ -1,0 +1,7 @@
+pos_of_SNP_in_ref	ref_base	SNP_base	synonymous or non-synonymous	Gene_annotation	possible_pseudogene?	amino_acid_original	amino_acid_change	change_in_hydrophobicity_of_AA?	change_in_polarisation_of_AA?	change_in_size_of_AA?	
+78392	C	T	non-synonymous	DNA-directed RNA polymerase alpha subunit	No	P	L	Yes	Yes	Yes	
+Total number of snps: 1
+Total number of snps in CDS region: 1
+Total number of synonymous SNPs: 0
+Total number of non-synonymous SNPs: 1
+Total number of possible pseudogenes: 0
