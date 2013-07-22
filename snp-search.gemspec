@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "2.5.2"
+  s.version = "2.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
-  s.date = "2013-04-19"
+  s.date = "2013-07-22"
   s.description = "Use the snp-search tool to create, import, manipulate and query your SNP database"
   s.email = "ali.al-shahib@phe.gov.uk"
   s.executables = ["snp-search"]
@@ -26,6 +26,11 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "bin/GAS_old_new_BWA_GATK_diploid_filtered_info_snps.tsv",
+    "bin/GAS_old_new_BWA_GATK_diploid_filtered_info_snps_positions.txt",
+    "bin/H090580172_unique_SNPs.txt",
+    "bin/H090600242_unique_SNPs.txt",
+    "bin/H091200143_unique_SNPs.txt",
     "bin/snp-search",
     "lib/create_methods.rb",
     "lib/filter_ignore_snps_methods.rb",
@@ -40,6 +45,7 @@ Gem::Specification.new do |s|
     "pkg/snp-search-2.3.0.gem",
     "pkg/snp-search-2.4.0.gem",
     "pkg/snp-search-2.5.0.gem",
+    "pkg/snp-search-2.5.2.gem",
     "snp-search.gemspec",
     "spec/snp-search_spec.rb",
     "spec/spec_helper.rb"
