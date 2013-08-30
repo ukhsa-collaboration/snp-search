@@ -39,7 +39,6 @@ Gem::Specification.new do |s|
     "pkg/snp-search-1.2.0.gem",
     "pkg/snp-search-2.10.0.gem",
     "pkg/snp-search-2.10.2.gem",
-    "pkg/snp-search-2.10.3.gem",
     "pkg/snp-search-2.3.0.gem",
     "pkg/snp-search-2.4.0.gem",
     "pkg/snp-search-2.5.0.gem",
