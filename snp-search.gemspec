@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "2.8.0"
+  s.version = "2.10.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
     "pkg/snp-search-2.5.2.gem",
     "pkg/snp-search-2.6.0.gem",
     "pkg/snp-search-2.7.0.gem",
+    "pkg/snp-search-2.8.0.gem",
     "snp-search.gemspec",
     "spec/snp-search_spec.rb",
     "spec/spec_helper.rb"
@@ -62,6 +63,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<slop>, ["~> 3.3.2"])
       s.add_runtime_dependency(%q<sqlite3>, ["~> 1.3.4"])
       s.add_runtime_dependency(%q<activerecord-import>, ["~> 0.2.8"])
+      s.add_runtime_dependency(%q<diff-lcs>, ["~> 1.1.3"])
       s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_development_dependency(%q<bundler>, ["> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
@@ -72,6 +74,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<slop>, ["~> 3.3.2"])
       s.add_dependency(%q<sqlite3>, ["~> 1.3.4"])
       s.add_dependency(%q<activerecord-import>, ["~> 0.2.8"])
+      s.add_dependency(%q<diff-lcs>, ["~> 1.1.3"])
       s.add_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_dependency(%q<bundler>, ["> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
@@ -83,6 +86,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<slop>, ["~> 3.3.2"])
     s.add_dependency(%q<sqlite3>, ["~> 1.3.4"])
     s.add_dependency(%q<activerecord-import>, ["~> 0.2.8"])
+    s.add_dependency(%q<diff-lcs>, ["~> 1.1.3"])
     s.add_dependency(%q<rspec>, ["~> 2.3.0"])
     s.add_dependency(%q<bundler>, ["> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
