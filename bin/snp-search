@@ -1,28 +1,26 @@
 require 'snp-search'
-require 'snp_db_connection.rb'
-require 'snp_db_models.rb'
-require 'snp_db_schema.rb'
-require 'output_information_methods.rb'
+require 'snp_db_connection'
+require 'snp_db_models'
+require 'snp_db_schema'
+require 'output_information_methods'
 require 'activerecord-import'
 require 'slop'
 
+# README file: https://github.com/phe-bioinformatics/snp-search/blob/master/README.rdoc'
+
 opts = Slop.parse do
 
-  banner "\nruby snp-search [-create] [-output] [-n <sqlite3>] [options]*"
+  banner "\nruby snp-search [-create] [-output] [-d <sqlite3>] [options]*"
 
   separator ''
 
   on :C, :create, 'Create database'
   on :O, :output, 'Output a process'
-
-  # separator ''
-  # # separator 'README file: https://github.com/hpa-bioinformatics/snp-search/blob/master/README.rdoc'
-  # # separator 'The following command must be used when using -create, or -query or -out_file'
-  # on :n, :name_of_database=, 'Name of database, Required'
-
+  
   separator ''
   
-  separator '-create -r reference_file.fasta -v vcf_file.vcf -d db.sqlite3'
+  separator '-create -r reference_file.gbk (or .embl) -v vcf_file.vcf -d db.sqlite3'
+  separator 'e.g. snp-search -C -r ecoli.gbk -v ecoli.vcf -d ecoli.sqlite3'
   on :r, :reference_file=, 'Reference genome file, in gbk or embl file format, Required', true
   on :v, :vcf_file=, 'variant call format (vcf) file, Required', true
   on :d, :name_of_database=, 'Name of database, Required'
@@ -30,8 +28,9 @@ opts = Slop.parse do
 
   separator ''
  
-  separator '-output -all_or_filtered_snps -d db.sqlite3 [options]'
-  on :f, :all_or_filtered_snps, 'SNPs from specified features in the database (if you do not want to ignore any SNPs, just use this option with -n -F/T -o)'
+  separator '-output -all_or_filtered_snps -d db.sqlite3 -T|-F [options]'
+  separator 'e.g. snp-search -O -f -F -d ecoli.sqlite3 -R -I phage,insertion,transposon -o ecoli_concatenated_snps_filtered.fasta'
+  on :f, :all_or_filtered_snps, 'ignore SNPs from specified features in the database (if you do not want to ignore any SNPs, just use this option with -F/T -o)'
   on :F, :fasta, 'output fasta file format (default)'
   on :T, :tabular, 'output tabular file format'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
@@ -39,13 +38,14 @@ opts = Slop.parse do
   on :R, :remove_non_informative_snps, 'Only output informative SNPs.'
   on :e, :ignore_snps_in_range=, 'A list of position ranges to ignore e.g 10..500,2000..2500.'
   on :a, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ).'
-  on :I, :ignore_snps_on_annotation=, 'The name of the feature(s) to ignore.  Features should be seperated by comma (e.g. phages,inserstion,transposons)'
+  on :I, :ignore_snps_on_annotation=, 'The name of the feature(s) to ignore.  Features should be seperated by comma (e.g. phage,inserstion,transposon)'
   on :o, :out=, 'Name of output file, Required'
   on :t, :tree, 'Generate SNP phylogeny (only used with -fasta option)'
   on :p, :fasttree_path=, 'Full path to the FastTree tool (e.g. /usr/local/bin/FastTree. only used with -tree option)'
   separator ''
 
-  separator '-output -unique_snps -d db.sqlite3 [options]'
+  separator '-output -unique_snps -d db.sqlite3 -s strains.txt -o unique_snps.txt [options]'
+  separator 'e.g. snp-search -O -u -d ecoli.sqlite3 -s strains_list_for_unique_snps.txt -o ecoli_unique_snps_strains.txt'
   on :u, :unique_snps, 'Query for unique snps in the database'  
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
@@ -54,7 +54,8 @@ opts = Slop.parse do
 
   separator ''
 
-  separator '-output -info -d db.sqlite3 [options]'
+  separator '-output -info -d db.sqlite3 -o info.txt [options]'
+  separator ''
   on :i, :info, 'Output various information about SNPs'
   on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
   on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30

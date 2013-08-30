@@ -19,7 +19,7 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
       snp.alleles.each do |allele|
         next if snp.alleles.any?{|allele| allele.base.length > 1} # indel
         if allele.id != snp.reference_allele_id
-          
+          snps_counter += 1
           # get annotation (if there is any) for each SNP
           features = Feature.joins(:snps).where("snps.id = ?", snp.id)
           
@@ -37,7 +37,7 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
           ref_base = Bio::Sequence.auto(Allele.find(snp.reference_allele_id).base)
           snp_base = Bio::Sequence.auto(allele.base)
           # count snps now: after you have selected the snps with gqs and snp_qual greater than the threshold.
-          snps_counter += 1
+          
           # If the feature is empty then just output basic information about the snp.
 
           if features.empty?
@@ -114,7 +114,7 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
                       total_number_of_pseudo +=1
                       outfile.puts "#{snp.ref_pos}\t#{features.map{|feature| feature.strand == 1} ? "#{ref_base.upcase}" : "#{ref_base.reverse_complement.upcase}"}\t#{features.map{|feature| feature.strand == 1} ? "#{snp_base.upcase}" : "#{snp_base.reverse_complement.upcase}"}\tnon-synonymous\t#{annotation.value}\tYes\t#{diffs[0][0].element}\t#{diffs[0][1].element}\t#{'Yes' if (hydrophobic.include? diffs[0][0].element) == (non_hydrophobic.include? diffs[0][1].element)}#{'No' if (hydrophobic.include? diffs[0][0].element) != (non_hydrophobic.include? diffs[0][1].element)}\t#{'Yes' if (polar.include? diffs[0][0].element) == (non_polar.include? diffs[0][1].element)}#{'No' if (polar.include? diffs[0][0].element) != (non_polar.include? diffs[0][1].element)}\t#{'Yes' if (small.include? diffs[0][0].element) == (non_small.include? diffs[0][1].element)}#{'No' if (small.include? diffs[0][0].element) != (non_small.include? diffs[0][1].element)}\t#{alleles_array.join("\t") if info}"
                     else
-                      outfile.puts "#{snp.ref_pos}\t#{features.map{|feature| feature.strand == 1} ? "#{ref_base.upcase}" : "#{ref_base.reverse_complement.upcase}"}\t#{features.map{|feature| feature.strand == 1} ? "#{snp_base.upcase}" : "#{snp_base.reverse_complement.upcase}"}\tnon-synonymous\t#{annotation.value}\tNo\t#{diffs[0][0].element}\t#{diffs[0][1].element}\t#{'Yes' if (hydrophobic.include? diffs[0][0].element) == (non_hydrophobic.include? diffs[0][1].element)}#{'No' if (hydrophobic.include? diffs[0][0].element) != (non_hydrophobic.include? diffs[0][1].element)}\t#{'Yes' if (polar.include? diffs[0][0].element) == (non_polar.include? diffs[0][1].element)}#{'No' if (polar.include? diffs[0][0].element) != (non_polar.include? diffs[0][1].element)}\t#{'Yes' if (small.include? diffs[0][0].element) == (non_small.include? diffs[0][1].element)}#{'No' if (small.include? diffs[0][0].element) != (non_small.include? diffs[0][1].element)}\t#{alleles_array.join("\t") if info}"
+                      outfile.puts "#{snp.ref_pos-1}\t#{features.map{|feature| feature.strand == 1} ? "#{ref_base.upcase}" : "#{ref_base.reverse_complement.upcase}"}\t#{features.map{|feature| feature.strand == 1} ? "#{snp_base.upcase}" : "#{snp_base.reverse_complement.upcase}"}\tnon-synonymous\t#{annotation.value}\tNo\t#{diffs[0][0].element}\t#{diffs[0][1].element}\t#{'Yes' if (hydrophobic.include? diffs[0][0].element) == (non_hydrophobic.include? diffs[0][1].element)}#{'No' if (hydrophobic.include? diffs[0][0].element) != (non_hydrophobic.include? diffs[0][1].element)}\t#{'Yes' if (polar.include? diffs[0][0].element) == (non_polar.include? diffs[0][1].element)}#{'No' if (polar.include? diffs[0][0].element) != (non_polar.include? diffs[0][1].element)}\t#{'Yes' if (small.include? diffs[0][0].element) == (non_small.include? diffs[0][1].element)}#{'No' if (small.include? diffs[0][0].element) != (non_small.include? diffs[0][1].element)}\t#{alleles_array.join("\t") if info}"
                     end
                   end
                 end
