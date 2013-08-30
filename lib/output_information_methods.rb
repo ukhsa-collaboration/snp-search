@@ -122,8 +122,8 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
             end
           end
         end
-        puts "Total SNPs added so far: #{cds_snps_counter}" if snps_counter % 100 == 0 
       end
+      puts "Total SNPs added so far: #{cds_snps_counter}" if snps_counter % 100 == 0 
     end
   end
   puts "Total number of snps: #{snps_counter}"
