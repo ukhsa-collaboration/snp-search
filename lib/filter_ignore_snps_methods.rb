@@ -1,5 +1,4 @@
 
-# require "/Volumes/NGS2_DataRAID/projects/ali/GAS/snp-search-2.0.0/lib/information_methods.rb"
 # This method performs several queries to ignore elements of the data for fasta or tabular output.
 # Its is called in lib/snp-search.rb
 

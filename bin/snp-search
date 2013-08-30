@@ -1,8 +1,8 @@
-require '/Volumes/NGS2_DataRAID/projects/ali/GAS/snp-search/lib/snp-search'
+require 'snp-search'
 require 'snp_db_connection.rb'
 require 'snp_db_models.rb'
 require 'snp_db_schema.rb'
-require '/Volumes/NGS2_DataRAID/projects/ali/GAS/snp-search/lib/output_information_methods.rb'
+require 'output_information_methods.rb'
 require 'activerecord-import'
 require 'slop'
 
