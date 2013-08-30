@@ -19,7 +19,7 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
       snp.alleles.each do |allele|
         next if snp.alleles.any?{|allele| allele.base.length > 1} # indel
         if allele.id != snp.reference_allele_id
-          snps_counter += 1
+          
           # get annotation (if there is any) for each SNP
           features = Feature.joins(:snps).where("snps.id = ?", snp.id)
           
@@ -37,7 +37,7 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
           ref_base = Bio::Sequence.auto(Allele.find(snp.reference_allele_id).base)
           snp_base = Bio::Sequence.auto(allele.base)
           # count snps now: after you have selected the snps with gqs and snp_qual greater than the threshold.
-          
+          snps_counter += 1
           # If the feature is empty then just output basic information about the snp.
 
           if features.empty?
@@ -122,8 +122,8 @@ def output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, inf
             end
           end
         end
+        puts "Total SNPs added so far: #{cds_snps_counter}" if snps_counter % 100 == 0 
       end
-      puts "Total SNPs added so far: #{cds_snps_counter}" if snps_counter % 100 == 0 
     end
   end
   puts "Total number of snps: #{snps_counter}"
