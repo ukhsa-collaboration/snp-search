@@ -53,6 +53,7 @@ end
 def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
 
   puts "Adding SNPs........"
+  
   # open vcf file and parse each line
   File.open(vcf_file) do |f|
     # header names
@@ -60,20 +61,23 @@ def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
       if  line =~ /CHROM/
         line.chomp!
         column_headings = line.split("\t")
-        strain_names = column_headings[9..-1]
-        strain_names.map!{|name| name.sub(/\..*/, '')}
-
-        strain_names.each do |str|
-          ss = Strain.new
-          ss.name = str
-          ss.save
-        end
-
+        potential_strain_names = column_headings[9..-1]
+        potential_strain_names.map!{|name| name.sub(/\..*/, '')}
+        # strain_names = column_headings[9..-1]
+        # strain_names.map!{|name| name.sub(/\..*/, '')}
         strains = Array.new
-        strain_names.each do |strain_name|
-          strain = Strain.find_by_name(strain_name) # equivalent to Strain.find.where("strains.name=?", strain_name).first
-          strains << strain
-        end
+
+        # strain_names.each do |str|
+        #   ss = Strain.new
+        #   ss.name = str
+        #   ss.save
+        # end
+
+        # strains = Array.new
+        # strain_names.each do |strain_name|
+        #   strain = Strain.find_by_name(strain_name) # equivalent to Strain.find.where("strains.name=?", strain_name).first
+        #   strains << strain
+        # end
 
         good_snps = 0
         # start parsing snps
@@ -86,28 +90,53 @@ def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
           ref_base = details[3]
           snp_bases = details[4].split(",")
           snp_qual = details [5]
+          number_of_colons_in_format = details[8].count ":"
           format = details[8].split(":")
+          
           gt_array_position = format.index("GT")
           gq_array_position = format.index("GQ")
           ad_array_position = format.index("AD")
           # dp = format.index("DP")
+          # columns_after_format = details[9..-1]
+          # samples = columns_after_format.select{|column_after_format| column_after_format.count(":")  == number_of_colons_in_format}
+          # puts samples
           samples = details[9..-1]
+          if strains.empty?
+            samples.zip(potential_strain_names).each do |column_after_format, potential_strain_name|
+              if column_after_format.count(":")  == number_of_colons_in_format
+                ss = Strain.new
+                ss.name = potential_strain_name
+                ss.save
+                strains << ss
+              end
+            end
+          end
 
           gts = []
           gqs = []
           ad_ratios = []
-
           
           next if samples.any?{|sample| sample =~ /\.\/\./}  # no coverage in at least one sample
+
           samples.map do |sample|
             format_values = sample.split(":") # output (e.g.): ["0/0 ", "0,255,209", "99"]
-            gt = format_values[gt_array_position] # e.g.          
-            gt = gt.split("/")
-            next if gt.size > 1 && (gt.first != gt.last) # if its 0/1, 1/2 etc then ignore
-            next if gt.first == "." # no coverage
-            gt = gt.first.to_i
+            if gt_array_position
+              gt = format_values[gt_array_position] # e.g.          
+              gt = gt.split("/")
+              next if gt.size > 1 && (gt.first != gt.last) # if its 0/1, 1/2 etc then ignore
+              next if gt.first == "." # no coverage
+              gt = gt.first.to_i
+            else
+              puts "GT field in the FORMAT section of the vcf file is missing....snp-search requires this field to assess the SNP quality.....sorry aborting"
+              exit
+            end
 
-            gq = format_values[gq_array_position].to_f
+            if gq_array_position
+              gq = format_values[gq_array_position].to_f
+            else
+              puts "GQ field in the FORMAT section of the vcf file is missing....snp-search requires this field to assess the SNP quality.....sorry aborting"
+              exit
+            end
 
             if ad_array_position
               # If there is AD in vcf.  Typically AD is Allele specific depth. i.e. if ref is 'A' and alt is 'G' and AD is '6,9' you got 6 A reads and 9 G reads.
@@ -117,11 +146,11 @@ def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
               sum_of_ad = ad.inject{|sum,x| sum + x }
               ad_ratios << ad[gt]/sum_of_ad.to_f
             end
-
+            
             gqs << gq
             gts << gt
           end
-
+          
           next if ad_ratios.any?{|ad_ratio| ad_ratio < cuttoff_ad.to_i} # exclude if any samples have a call ratio of less than a cuttoff set by user
           if gts.size == samples.size # if some gts have been rejected due to heterozygote or no coverage
             good_snps +=1
@@ -143,6 +172,7 @@ def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
               s.reference_allele = ref_allele
               s.save
 
+              
               snp_alleles = Array.new
               gts.uniq.select{|gt| gt > 0}.each do |gt|
                 # create snp allele

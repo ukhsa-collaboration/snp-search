@@ -1,8 +1,10 @@
-require 'snp-search'
-require 'snp_db_connection'
-require 'snp_db_models'
-require 'snp_db_schema'
-require 'output_information_methods'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/snp-search'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/snp_db_connection'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/snp_db_models'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/snp_db_schema'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/output_information_methods'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/create_methods'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/filter_ignore_snps_methods.rb'
 require 'activerecord-import'
 require 'slop'
 
@@ -143,6 +145,7 @@ elsif opts[:output]
 
     error_msg = ""
 
+    
     error_msg += "-d: \t Name of your database\n" unless opts[:name_of_database]
     error_msg += "-o: \t name of your output file\n" unless opts[:out]
     error_msg += "-F: \t Fasta output OR\n-T: \t Tabular output" unless opts[:fasta] || opts[:tabular]

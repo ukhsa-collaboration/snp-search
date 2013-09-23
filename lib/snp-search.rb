@@ -28,8 +28,9 @@ def information(out, cuttoff_genotype, cuttoff_snp)
   
   strains = Strain.all
 
-  snps = Snp.find_by_sql("SELECT distinct snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id INNER JOIN strains ON strains.id = genotypes.strain_id where alleles.id <> snps.reference_allele_id")
+  # snps = Snp.find_by_sql("SELECT distinct snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id INNER JOIN strains ON strains.id = genotypes.strain_id where alleles.id <> snps.reference_allele_id")
 
+  snps = Snp.find_by_sql("SELECT distinct snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id")
   outfile = File.open(out, "w")
 
   output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, true)

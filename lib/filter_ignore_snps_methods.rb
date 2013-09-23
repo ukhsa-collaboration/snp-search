@@ -2,7 +2,7 @@
 # This method performs several queries to ignore elements of the data for fasta or tabular output.
 # Its is called in lib/snp-search.rb
 
-require 'output_information_methods'
+require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/output_information_methods'
 
 def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strains, remove_non_informative_snps, fasta_output, tabular_output, cuttoff_genotype, cuttoff_snp, tree, fasttree_path)
 
@@ -81,8 +81,9 @@ def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strain
       strain_alleles = Hash.new
       strains.each do |strain|
         strain_genotype = genotypes.select{|genotype| genotype.strain_id == strain.id}.first
+        # next if strain_genotype == nil
+        puts strain_genotype.inspect
         strain_allele = alleles.select{|allele| allele.id == strain_genotype.allele_id}.first
-
         strain_alleles[strain.name] = strain_allele.base
      end
 
