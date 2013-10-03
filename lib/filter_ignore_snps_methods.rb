@@ -2,7 +2,7 @@
 # This method performs several queries to ignore elements of the data for fasta or tabular output.
 # Its is called in lib/snp-search.rb
 
-require '/Volumes/NGS2_DataRAID/projects/ali/GAS/testing_snp-search/snp-search/lib/output_information_methods'
+require 'output_information_methods'
 
 def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strains, remove_non_informative_snps, fasta_output, tabular_output, cuttoff_genotype, cuttoff_snp, tree, fasttree_path)
 
