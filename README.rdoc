@@ -106,9 +106,9 @@ Alternatively, you may download a SQL tool to view your database (e.g. SQLite so
 == Contact
 
 If you have any comments, questions or suggestions, please email
-  ali.al-shahib@hpa.org.uk
+  ali.al-shahib@phe.gov.uk
 or
-  anthony.underwood@hpa.org.uk
+  anthony.underwood@phe.gov.uk
 
 Have fun snp-searching!
 
