@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "2.10.8"
+  s.version = "2.11.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
-  s.date = "2013-08-30"
+  s.date = "2014-01-03"
   s.description = "Use the snp-search tool to create, import, manipulate and query your SNP database"
   s.email = "ali.al-shahib@phe.gov.uk"
   s.executables = ["snp-search"]
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
+    "Manual/snp-search_user_manual.pdf",
     "README",
     "README.rdoc",
     "Rakefile",
@@ -47,7 +48,9 @@ Gem::Specification.new do |s|
     "pkg/snp-search-2.8.0.gem",
     "snp-search.gemspec",
     "spec/snp-search_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "test_data/Ecoli_test_set.vcf",
+    "test_data/Reference_file_Ecoli_test_set.gbk"
   ]
   s.homepage = "http://github.com/phe-bioinformatics/snp-search"
   s.licenses = ["MIT"]
