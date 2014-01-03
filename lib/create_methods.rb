@@ -50,7 +50,7 @@ def populate_features_and_annotations(sequence_file)
 end
 
 #This method populates the rest of the information, i.e. SNP information, Alleles and Genotypes.
-def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
+def populate_snps_alleles_genotypes(vcf_file, cutoff_ad)
 
   puts "Adding SNPs........"
   
@@ -151,7 +151,7 @@ def populate_snps_alleles_genotypes(vcf_file, cuttoff_ad)
             gts << gt
           end
           
-          next if ad_ratios.any?{|ad_ratio| ad_ratio < cuttoff_ad.to_i} # exclude if any samples have a call ratio of less than a cuttoff set by user
+          next if ad_ratios.any?{|ad_ratio| ad_ratio < cutoff_ad.to_i} # exclude if any samples have a call ratio of less than a cutoff set by user
           if gts.size == samples.size # if some gts have been rejected due to heterozygote or no coverage
             good_snps +=1
             

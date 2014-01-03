@@ -26,7 +26,7 @@ opts = Slop.parse do
   on :r, :reference_file=, 'Reference genome file, in gbk or embl file format, Required', true
   on :v, :vcf_file=, 'variant call format (vcf) file, Required', true
   on :d, :name_of_database=, 'Name of database, Required'
-  on :A, :cuttoff_ad=, 'AD ratio cutoff (default 0.9)', :as => :int, :default => 0.9
+  on :A, :cutoff_ad=, 'AD ratio cutoff (default 0.9)', :as => :int, :default => 0.9
 
   separator ''
  
@@ -35,8 +35,8 @@ opts = Slop.parse do
   on :f, :all_or_filtered_snps, 'ignore SNPs from specified features in the database (if you do not want to ignore any SNPs, just use this option with -F/T -o)'
   on :F, :fasta, 'output fasta file format (default)'
   on :T, :tabular, 'output tabular file format'
-  on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
-  on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
+  on :c, :cutoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
+  on :g, :cutoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
   on :R, :remove_non_informative_snps, 'Only output informative SNPs.'
   on :e, :ignore_snps_in_range=, 'A list of position ranges to ignore e.g 10..500,2000..2500.'
   on :a, :ignore_strains=, 'A list of strains to ignore (seperate by comma e.g. S1,S4,S8 ).'
@@ -49,8 +49,8 @@ opts = Slop.parse do
   separator '-output -unique_snps -d db.sqlite3 -s strains.txt -o unique_snps.txt [options]'
   separator 'e.g. snp-search -O -u -d ecoli.sqlite3 -s strains_list_for_unique_snps.txt -o ecoli_unique_snps_strains.txt'
   on :u, :unique_snps, 'Query for unique snps in the database'  
-  on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
-  on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
+  on :c, :cutoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
+  on :g, :cutoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
   on :s, :strain=, 'The strains/samples you like to query (only used with -unique_snps flag)'
   on :o, :out=, 'Name of output file, Required'
 
@@ -59,8 +59,8 @@ opts = Slop.parse do
   separator '-output -info -d db.sqlite3 -o info.txt [options]'
   separator ''
   on :i, :info, 'Output various information about SNPs'
-  on :c, :cuttoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
-  on :g, :cuttoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
+  on :c, :cutoff_snp_qual=, 'SNP quality cutoff, (default = 90)', :as => :int, :default => 90
+  on :g, :cutoff_genotype=, 'Genotype quality cutoff (default = 30)', :as => :int,  :default => 30
   on :o, :out=, 'Name of output file, Required'
 end
 
@@ -70,7 +70,7 @@ end
 if opts[:create] 
 
   # raise "Please provide a database file name" if opts[:reference_file].empty?
-  # puts opts[:cuttoff_snp_qual].to_i
+  # puts opts[:cutoff_snp_qual].to_i
   
     error_msg = ""
 
@@ -124,7 +124,7 @@ if opts[:create]
 
   #The populate_snps_alleles_genotypes method populates the snps, alleles and genotypes.  It uses the vcf file, and if specified, the SNP quality cutoff and genotype quality cutoff
 
-  populate_snps_alleles_genotypes(opts[:vcf_file], opts[:cuttoff_ad])
+  populate_snps_alleles_genotypes(opts[:vcf_file], opts[:cutoff_ad])
 
 ###########################################################
 
@@ -155,8 +155,8 @@ elsif opts[:output]
     error_msg_optional += "-I,\t --ignore_snps_on_annotation: The name of the feature(s) to ignore.  Features should be seperated by comma (e.g. phages,inserstion,transposons)\n" unless opts[:ignore_snps_on_annotation]
     error_msg_optional += "-a,\t --ignore_strains: A list of strains to ignore\n" unless  opts[:ignore_strains]
     error_msg_optional += "-e,\t --ignore_snps_in_range: A list of position ranges to ignore e.g 10..500,2000..2500\n" unless  opts[:ignore_snps_in_range]
-    error_msg_optional += "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality\n"  unless  opts[:cuttoff_snp_qual]
-    error_msg_optional += "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality\n"  unless  opts[:cuttoff_genotype]
+    error_msg_optional += "-c,\t --cutoff_snp_qual: cutoff for SNP Quality\n"  unless  opts[:cutoff_snp_qual]
+    error_msg_optional += "-g,\t --cutoff_genotype: cutoff for Genotype Quality\n"  unless  opts[:cutoff_genotype]
     error_msg_optional += "-R,\t --remove_non_informative_snps: Only output informative SNPs\n"  unless  opts[:remove_non_informative_snps]
     error_msg_optional += "-t,\t --tree: Construct tree from output\n" unless  opts[:tree]
 
@@ -166,8 +166,8 @@ elsif opts[:output]
       puts "Optional fields:"
       puts error_msg_optional
       # Added this here as it wont appear here in error_msg_optional as its set as default.
-      puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
-      puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
+      puts "-c,\t --cutoff_snp_qual: cutoff for SNP Quality (default 90)\n"
+      puts "-g,\t --cutoff_genotype: cutoff for Genotype Quality (default 30)\n"
       # puts opts.help unless opts.empty?
       exit
     end
@@ -176,7 +176,7 @@ elsif opts[:output]
 
     establish_connection(opts[:name_of_database])
 
-    get_snps(opts[:out], opts[:ignore_snps_on_annotation], opts[:ignore_snps_in_range], opts[:ignore_strains], opts[:remove_non_informative_snps], opts[:fasta], opts[:tabular], opts[:cuttoff_genotype], opts[:cuttoff_snp_qual], opts[:tree], opts[:fasttree_path])
+    get_snps(opts[:out], opts[:ignore_snps_on_annotation], opts[:ignore_snps_in_range], opts[:ignore_strains], opts[:remove_non_informative_snps], opts[:fasta], opts[:tabular], opts[:cutoff_genotype], opts[:cutoff_snp_qual], opts[:tree], opts[:fasttree_path])
   end
 
 ####################################################################################################
@@ -194,8 +194,8 @@ elsif opts[:output]
       puts error_msg
       puts "Optional fields:"
       # Added this here as it wont appear here in error_msg_optional as its set as default.
-      puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
-      puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
+      puts "-c,\t --cutoff_snp_qual: cutoff for SNP Quality (default 90)\n"
+      puts "-g,\t --cutoff_genotype: cutoff for Genotype Quality (default 30)\n"
       # puts opts.help unless opts.empty?
       exit
     end
@@ -210,7 +210,7 @@ elsif opts[:output]
         strains << line.chop
       end
     # find_unique_snps defined in bin/snp-search.rb 
-    find_unqiue_snps(strains, opts[:out], opts[:cuttoff_genotype], opts[:cuttoff_snp_qual])
+    find_unqiue_snps(strains, opts[:out], opts[:cutoff_genotype], opts[:cutoff_snp_qual])
   end
   
 ##############################################################
@@ -226,8 +226,8 @@ elsif opts[:output]
       puts error_msg
       puts "Optional fields:"
       # Added this here as it wont appear here in error_msg_optional as its set as default.
-      puts "-c,\t --cuttoff_snp_qual: cuttoff for SNP Quality (default 90)\n"
-      puts "-g,\t --cuttoff_genotype: cuttoff for Genotype Quality (default 30)\n"
+      puts "-c,\t --cutoff_snp_qual: cutoff for SNP Quality (default 90)\n"
+      puts "-g,\t --cutoff_genotype: cutoff for Genotype Quality (default 30)\n"
       # puts opts.help unless opts.empty?
       exit
     end
@@ -237,7 +237,7 @@ elsif opts[:output]
     establish_connection(opts[:name_of_database])
 
     #information defined in bin/snp-search.rb
-    information(opts[:out], opts[:cuttoff_genotype], opts[:cuttoff_snp_qual])
+    information(opts[:out], opts[:cutoff_genotype], opts[:cutoff_snp_qual])
     
   end
   

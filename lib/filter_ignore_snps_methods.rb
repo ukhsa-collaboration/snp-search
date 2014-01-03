@@ -4,7 +4,7 @@
 
 require 'output_information_methods'
 
-def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strains, remove_non_informative_snps, fasta_output, tabular_output, cuttoff_genotype, cuttoff_snp, tree, fasttree_path)
+def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strains, remove_non_informative_snps, fasta_output, tabular_output, cutoff_genotype, cutoff_snp, tree, fasttree_path)
 
   strains = Strain.all
 
@@ -72,11 +72,11 @@ def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strain
       genotypes = snp.alleles.collect{|allele| allele.genotypes}.flatten
 
       snp_qual = Snp.find_by_sql("select qual from snps where snps.id = #{snp.id}")
-      # ignore snp if the snp qual is less than cuttoff.
-      next if snp_qual.any?{|snps_quality| snps_quality.qual < cuttoff_snp.to_i}
+      # ignore snp if the snp qual is less than cutoff.
+      next if snp_qual.any?{|snps_quality| snps_quality.qual < cutoff_snp.to_i}
       
       next if alleles.any?{|allele| allele.base.length > 1} # indel
-      next unless genotypes.all?{|genotype| genotype.geno_qual >= cuttoff_genotype} # all geno quals > cutoff
+      next unless genotypes.all?{|genotype| genotype.geno_qual >= cutoff_genotype.to_f} # all geno quals > cutoff
       # puts "#{i} SNPs processed so far" if i % 100 == 0
       strain_alleles = Hash.new
       strains.each do |strain|
@@ -102,7 +102,7 @@ def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strain
 
   # If user has specified a tabular output
   if tabular_output
-    output_information_methods(snps_array, output, cuttoff_genotype, cuttoff_snp, true)
+    output_information_methods(snps_array, output, cutoff_genotype, cutoff_snp, true)
   # If user has specified a fasta output
   elsif fasta_output
     # generate FASTA file

@@ -7,7 +7,7 @@ require 'create_methods'
 require 'filter_ignore_snps_methods'
 require 'output_information_methods'
 
-def find_unqiue_snps(strain_names, out, cuttoff_genotype, cuttoff_snp)
+def find_unqiue_snps(strain_names, out, cutoff_genotype, cutoff_snp)
 
   *strain_names = strain_names
 
@@ -15,14 +15,14 @@ def find_unqiue_snps(strain_names, out, cuttoff_genotype, cuttoff_snp)
 
   outfile = File.open(out, "w")
 
-   snps = Snp.find_by_sql("SELECT snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id INNER JOIN strains ON strains.id = genotypes.strain_id WHERE (#{where_statement}) AND alleles.id <> snps.reference_allele_id AND genotypes.geno_qual >= #{cuttoff_genotype} AND snps.qual >= #{cuttoff_snp} AND (SELECT COUNT(*) from snps AS s INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id WHERE alleles.id <> snps.reference_allele_id and s.id = snps.id) = #{strain_names.size} GROUP BY snps.id HAVING COUNT(*) = #{strain_names.size}")
+   snps = Snp.find_by_sql("SELECT snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id INNER JOIN strains ON strains.id = genotypes.strain_id WHERE (#{where_statement}) AND alleles.id <> snps.reference_allele_id AND genotypes.geno_qual >= #{cutoff_genotype} AND snps.qual >= #{cutoff_snp} AND (SELECT COUNT(*) from snps AS s INNER JOIN alleles ON alleles.snp_id = snps.id INNER JOIN genotypes ON alleles.id = genotypes.allele_id WHERE alleles.id <> snps.reference_allele_id and s.id = snps.id) = #{strain_names.size} GROUP BY snps.id HAVING COUNT(*) = #{strain_names.size}")
    # puts "The number of unique snps are #{snps.size}"
 
-   output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, false)
+   output_information_methods(snps, outfile, cutoff_genotype, cutoff_snp, false)
 end
 
 
-def information(out, cuttoff_genotype, cuttoff_snp)
+def information(out, cutoff_genotype, cutoff_snp)
 
   puts "outputting SNP info....."
   
@@ -33,7 +33,7 @@ def information(out, cuttoff_genotype, cuttoff_snp)
   snps = Snp.find_by_sql("SELECT distinct snps.* from snps INNER JOIN alleles ON alleles.snp_id = snps.id")
   outfile = File.open(out, "w")
 
-  output_information_methods(snps, outfile, cuttoff_genotype, cuttoff_snp, true)
+  output_information_methods(snps, outfile, cutoff_genotype, cutoff_snp, true)
 
 end
 
