@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "snp-search"
-  s.version = "2.11.0"
+  s.version = "2.12.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ali Al-Shahib", "Anthony Underwood"]
-  s.date = "2014-01-03"
+  s.date = "2014-01-10"
   s.description = "Use the snp-search tool to create, import, manipulate and query your SNP database"
   s.email = "ali.al-shahib@phe.gov.uk"
   s.executables = ["snp-search"]
