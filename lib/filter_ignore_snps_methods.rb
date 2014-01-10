@@ -82,7 +82,6 @@ def get_snps(out, ignore_snps_on_annotation, ignore_snps_in_range, ignore_strain
       strains.each do |strain|
         strain_genotype = genotypes.select{|genotype| genotype.strain_id == strain.id}.first
         # next if strain_genotype == nil
-        puts strain_genotype.inspect
         strain_allele = alleles.select{|allele| allele.id == strain_genotype.allele_id}.first
         strain_alleles[strain.name] = strain_allele.base
      end
