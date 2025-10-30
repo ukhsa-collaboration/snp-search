@@ -7,7 +7,7 @@ source "http://rubygems.org"
  gem "bio", "~> 1.4.2"
  gem "slop", "~> 3.3.2"
  gem 'sqlite3', "~> 1.3.4"
- gem 'activerecord-import', "~> 0.2.8"
+ gem 'activerecord-import', '~> 0.4.0'
  gem 'diff-lcs', "~> 1.1.3"
 
 # Add dependencies to develop your gem here.
